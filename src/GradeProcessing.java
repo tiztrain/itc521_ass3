@@ -18,7 +18,9 @@ public class GradeProcessing extends Application {
     private TextField cumulativeMark = new TextField();
     private TextField grade = new TextField();
 
-    private Button btCalculate = new Button("Calculate");
+    private Button btSearchRecord = new Button("Search for Record");
+    private Button btInsertRecord = new Button("Insert Record");
+    private Button btUpdateRecord = new Button("Update Record");
 
     public static void main(String[] args) {
         launch(args);
@@ -46,6 +48,9 @@ public class GradeProcessing extends Application {
         gridPane.add(cumulativeMark, 1, 6);
         gridPane.add(new Label("Grade:"), 0, 7);
         gridPane.add(grade, 1, 7);
+        gridPane.add(btSearchRecord, 1, 8);
+        gridPane.add(btInsertRecord, 1, 9);
+        gridPane.add(btUpdateRecord, 1, 10);
 
         // Set properties for UI
         gridPane.setAlignment(Pos.CENTER);
