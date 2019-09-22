@@ -1,3 +1,4 @@
+import itc521_ass3_modules.Jdbc;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,7 +8,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
+
 public class GradeProcessing extends Application {
+
 
     private TextField id = new TextField();
     private TextField name = new TextField();
@@ -22,7 +26,10 @@ public class GradeProcessing extends Application {
     private Button btInsertRecord = new Button("Insert Record");
     private Button btUpdateRecord = new Button("Update Record");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        //run jdbc and establish connection
+        Jdbc.main(args);
+        //setup stage and GUI
         launch(args);
     }
 
@@ -71,5 +78,7 @@ public class GradeProcessing extends Application {
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
 
+
     }
 }
+
