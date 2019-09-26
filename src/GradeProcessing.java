@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class GradeProcessing extends Application {
 
-
+    // Create text field boxes
     private TextField id = new TextField();
     private TextField name = new TextField();
     private TextField quiz = new TextField();
@@ -22,11 +22,13 @@ public class GradeProcessing extends Application {
     private TextField cumulativeMark = new TextField();
     private TextField grade = new TextField();
 
+    // Create buttons for actions
     private Button btCalculateRecord = new Button("Calculate Record");
     private Button btSearchRecord = new Button("Search for Record");
     private Button btInsertRecord = new Button("Insert Record");
     private Button btUpdateRecord = new Button("Update Record");
 
+    // Main class to run functions
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         //run jdbc and establish connection
         Jdbc.main(args);
@@ -34,6 +36,7 @@ public class GradeProcessing extends Application {
         launch(args);
     }
 
+    // GUI setup
     @Override
     public void start(Stage primaryStage) {
         // Create UI
@@ -72,8 +75,9 @@ public class GradeProcessing extends Application {
         cumulativeMark.setEditable(false);
         grade.setEditable(false);
 
+
         // Process events
-        btCalculateRecord.setOnAction(e -> CalculateGrade());
+        btCalculateRecord.setOnAction(e -> calculateGrade());
 
         // Create a scene and place it in the stage
         Scene scene = new Scene(gridPane, 400, 600);
@@ -83,30 +87,128 @@ public class GradeProcessing extends Application {
 
     }
 
-    private void CalculateGrade() {
-        // Get values from text fields
+    private void calculateGrade() {
+        // Assign variables to values in text fields
         double quizMark = Double.parseDouble(quiz.getText());
         double a1Mark = Double.parseDouble(a1.getText());
         double a2Mark = Double.parseDouble(a2.getText());
         double examMark = Double.parseDouble(exam.getText());
-        double totalMark;
-        String result = "";
 
-        totalMark = (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
+        // Initialise student object
+        Student student = new Student(quizMark, a1Mark, a2Mark, examMark);
 
-        if (totalMark < 50) {
-            result = "Fail";
-        } else if (totalMark >= 50 && totalMark < 65) {
-            result = "Pass";
-        } else if (totalMark >= 65 && totalMark < 75) {
-            result = "CR";
-        } else if (totalMark >= 75 && totalMark < 85) {
-            result = "DI";
-        } else
-            result = "HD";
-
+        // Calculate total marks and allocate to variable
+        double totalMark = student.getTotalMark();
+        // Assigned total mark to student
+        student.setTotalMark(totalMark);
+        // Calculate grade result off total mark
+        String result = student.getResult();
+        // Display results in non editable fields
         cumulativeMark.setText(String.valueOf(totalMark));
         grade.setText(result);
+
+
+        // Get values from text fields
+//        double quizMark = Double.parseDouble(quiz.getText());
+//        double a1Mark = Double.parseDouble(a1.getText());
+//        double a2Mark = Double.parseDouble(a2.getText());
+//        double examMark = Double.parseDouble(exam.getText());
+//        double totalMark;
+//        String result;
+//
+//        totalMark = (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
+//
+//        if (totalMark < 50) {
+//            result = "Fail";
+//        } else if (totalMark >= 50 && totalMark < 65) {
+//            result = "Pass";
+//        } else if (totalMark >= 65 && totalMark < 75) {
+//            result = "CR";
+//        } else if (totalMark >= 75 && totalMark < 85) {
+//            result = "DI";
+//        } else
+//            result = "HD";
+//
+//        cumulativeMark.setText(String.valueOf(totalMark));
+//        grade.setText(result);
+    }
+
+    class Student {
+        // Get values from text fields
+        double quizMark;
+        double a1Mark;
+        double a2Mark;
+        double examMark;
+        double totalMark;
+        String result;
+
+//        public Student() {
+//            this.quizMark = quizMark;
+//            this.a1Mark = a1Mark;
+//            this.a2Mark = a2Mark;
+//            this.examMark = examMark;
+//        }
+
+        public Student(double quizMark, double a1Mark, double a2Mark, double examMark) {
+            this.quizMark = quizMark;
+            this.a1Mark = a1Mark;
+            this.a2Mark = a2Mark;
+            this.examMark = examMark;
+        }
+
+        public double getQuizMark() {
+            return quizMark;
+        }
+
+        public void setQuizMark(double quizMark) {
+            this.quizMark = quizMark;
+        }
+
+        public double getA1Mark() {
+            return a1Mark;
+        }
+
+        public void setA1Mark(double a1Mark) {
+            this.a1Mark = a1Mark;
+        }
+
+        public double getA2Mark() {
+            return a2Mark;
+        }
+
+        public void setA2Mark(double a2Mark) {
+            this.a2Mark = a2Mark;
+        }
+
+        public double getExamMark() {
+            return examMark;
+        }
+
+        public void setExamMark(double examMark) {
+            this.examMark = examMark;
+        }
+
+        public double getTotalMark() {
+            return (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
+        }
+
+        public void setTotalMark(double totalMark) {
+            this.totalMark = totalMark;
+        }
+
+        public String getResult() {
+            if (totalMark < 50) {
+                result = "Fail";
+            } else if (totalMark >= 50 && totalMark < 65) {
+                result = "Pass";
+            } else if (totalMark >= 65 && totalMark < 75) {
+                result = "CR";
+            } else if (totalMark >= 75 && totalMark < 85) {
+                result = "DI";
+            } else
+                result = "HD";
+            return result;
+        }
 
     }
 }
