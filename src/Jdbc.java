@@ -1,5 +1,3 @@
-package itc521_ass3_modules;
-
 import java.sql.*;
 
 public class Jdbc {
@@ -16,8 +14,16 @@ public class Jdbc {
         // Create a statement
         Statement statement = connection.createStatement();
 
+//        double quizMark = 0;
+//        double a1Mark = 0;
+//        double a2Mark = 0;
+//        double examMark = 0;
+//        double cumulativeMark;
+//        String grade;
+
+        //GradeProcessing.Student student = new GradeProcessing.Student(quizMark, a1Mark, a2Mark, examMark);
         // Hardcode variables for now
-        int id = 1234;
+        int id = 12345;
         String name = "bob";
         double quiz = 90;
         double a1 = 75;

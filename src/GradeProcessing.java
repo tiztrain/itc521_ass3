@@ -1,4 +1,3 @@
-import itc521_ass3_modules.Jdbc;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -87,129 +86,109 @@ public class GradeProcessing extends Application {
 
     }
 
-    private void calculateGrade() {
-        // Assign variables to values in text fields
-        double quizMark = Double.parseDouble(quiz.getText());
-        double a1Mark = Double.parseDouble(a1.getText());
-        double a2Mark = Double.parseDouble(a2.getText());
-        double examMark = Double.parseDouble(exam.getText());
+    public void calculateGrade() {
 
         // Initialise student object
-        Student student = new Student(quizMark, a1Mark, a2Mark, examMark);
+        Student student = new Student();
 
-        // Calculate total marks and allocate to variable
-        double totalMark = student.getTotalMark();
-        // Assigned total mark to student
-        student.setTotalMark(totalMark);
-        // Calculate grade result off total mark
-        String result = student.getResult();
+        // Setup all the setters
+        student.setQuizMark();
+        student.setA1Mark();
+        student.setA2Mark();
+        student.setExamMark();
+        student.setCumulativeMark();
+        student.setGrade();
+
+        // Calculate variable from student getters
+        double cumulativeMarkText = student.getCumulativeMark();
+        String gradeText = student.getGrade();
+
         // Display results in non editable fields
-        cumulativeMark.setText(String.valueOf(totalMark));
-        grade.setText(result);
+        cumulativeMark.setText(String.valueOf(cumulativeMarkText));
+        grade.setText(gradeText);
 
-
-        // Get values from text fields
-//        double quizMark = Double.parseDouble(quiz.getText());
-//        double a1Mark = Double.parseDouble(a1.getText());
-//        double a2Mark = Double.parseDouble(a2.getText());
-//        double examMark = Double.parseDouble(exam.getText());
-//        double totalMark;
-//        String result;
-//
-//        totalMark = (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
-//
-//        if (totalMark < 50) {
-//            result = "Fail";
-//        } else if (totalMark >= 50 && totalMark < 65) {
-//            result = "Pass";
-//        } else if (totalMark >= 65 && totalMark < 75) {
-//            result = "CR";
-//        } else if (totalMark >= 75 && totalMark < 85) {
-//            result = "DI";
-//        } else
-//            result = "HD";
-//
-//        cumulativeMark.setText(String.valueOf(totalMark));
-//        grade.setText(result);
     }
 
-    class Student {
+
+    public class Student {
         // Get values from text fields
+        int id;
         double quizMark;
         double a1Mark;
         double a2Mark;
         double examMark;
-        double totalMark;
-        String result;
+        double cumulativeMark;
+        String grade;
 
-//        public Student() {
-//            this.quizMark = quizMark;
-//            this.a1Mark = a1Mark;
-//            this.a2Mark = a2Mark;
-//            this.examMark = examMark;
-//        }
+        public Student() {
 
-        public Student(double quizMark, double a1Mark, double a2Mark, double examMark) {
-            this.quizMark = quizMark;
-            this.a1Mark = a1Mark;
-            this.a2Mark = a2Mark;
-            this.examMark = examMark;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public double getQuizMark() {
             return quizMark;
         }
 
-        public void setQuizMark(double quizMark) {
-            this.quizMark = quizMark;
+        public void setQuizMark() {
+            this.quizMark = Double.parseDouble(quiz.getText());
         }
 
         public double getA1Mark() {
             return a1Mark;
         }
 
-        public void setA1Mark(double a1Mark) {
-            this.a1Mark = a1Mark;
+        public void setA1Mark() {
+            this.a1Mark = Double.parseDouble(a1.getText());
         }
 
         public double getA2Mark() {
             return a2Mark;
         }
 
-        public void setA2Mark(double a2Mark) {
-            this.a2Mark = a2Mark;
+        public void setA2Mark() {
+            this.a2Mark = Double.parseDouble(a2.getText());
         }
 
         public double getExamMark() {
             return examMark;
         }
 
-        public void setExamMark(double examMark) {
-            this.examMark = examMark;
+        public void setExamMark() {
+            this.examMark = Double.parseDouble(exam.getText());
         }
 
-        public double getTotalMark() {
-            return (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
+        public double getCumulativeMark() {
+            return cumulativeMark;
         }
 
-        public void setTotalMark(double totalMark) {
-            this.totalMark = totalMark;
+        public void setCumulativeMark() {
+            this.cumulativeMark = (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
         }
 
-        public String getResult() {
-            if (totalMark < 50) {
-                result = "Fail";
-            } else if (totalMark >= 50 && totalMark < 65) {
-                result = "Pass";
-            } else if (totalMark >= 65 && totalMark < 75) {
-                result = "CR";
-            } else if (totalMark >= 75 && totalMark < 85) {
-                result = "DI";
+        public String getGrade() {
+            return grade;
+        }
+
+        public void setGrade() {
+            if (cumulativeMark < 50) {
+                grade = "Fail";
+            } else if (cumulativeMark >= 50 && cumulativeMark < 65) {
+                grade = "Pass";
+            } else if (cumulativeMark >= 65 && cumulativeMark < 75) {
+                grade = "CR";
+            } else if (cumulativeMark >= 75 && cumulativeMark < 85) {
+                grade = "DI";
             } else
-                result = "HD";
-            return result;
+                grade = "HD";
+            this.grade = grade;
         }
-
     }
 }
 
