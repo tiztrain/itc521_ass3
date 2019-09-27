@@ -27,17 +27,21 @@ public class GradeProcessing extends Application {
     private Button btInsertRecord = new Button("Insert Record");
     private Button btUpdateRecord = new Button("Update Record");
 
+    public Jdbc jdbc;
+
     // Main class to run functions
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         //run jdbc and establish connection
-        Jdbc.main(args);
         //setup stage and GUI
         launch(args);
+        //initalise jdbc and setup
+        Jdbc jdbc = new Jdbc();
+        jdbc.setup();
     }
 
     // GUI setup
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws SQLException, ClassNotFoundException {
         // Create UI
         GridPane gridPane = new GridPane();
         gridPane.setHgap(5);
@@ -77,6 +81,7 @@ public class GradeProcessing extends Application {
 
         // Process events
         btCalculateRecord.setOnAction(e -> calculateGrade());
+        btInsertRecord.setOnAction(e -> jdbc.insertStudent());
 
         // Create a scene and place it in the stage
         Scene scene = new Scene(gridPane, 400, 600);
@@ -92,6 +97,8 @@ public class GradeProcessing extends Application {
         Student student = new Student();
 
         // Setup all the setters
+        student.setId();
+        student.setName();
         student.setQuizMark();
         student.setA1Mark();
         student.setA2Mark();
@@ -113,6 +120,7 @@ public class GradeProcessing extends Application {
     public class Student {
         // Get values from text fields
         int id;
+        String name;
         double quizMark;
         double a1Mark;
         double a2Mark;
@@ -128,8 +136,16 @@ public class GradeProcessing extends Application {
             return id;
         }
 
-        public void setId(int id) {
-            this.id = id;
+        public void setId() {
+            this.id = Integer.parseInt(quiz.getText());
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName() {
+            this.name = quiz.getText();
         }
 
         public double getQuizMark() {
