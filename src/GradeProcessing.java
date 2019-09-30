@@ -7,7 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class GradeProcessing extends Application {
 
@@ -27,16 +29,15 @@ public class GradeProcessing extends Application {
     private Button btInsertRecord = new Button("Insert Record");
     private Button btUpdateRecord = new Button("Update Record");
 
-    public Jdbc jdbc;
+    //public Jdbc jdbc;
 
     // Main class to run functions
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        //run jdbc and establish connection
+//        //run jdbc and establish connection
+//        Jdbc jdbc = new Jdbc();
+//        jdbc.setup();
         //setup stage and GUI
         launch(args);
-        //initalise jdbc and setup
-        Jdbc jdbc = new Jdbc();
-        jdbc.setup();
     }
 
     // GUI setup
@@ -78,20 +79,67 @@ public class GradeProcessing extends Application {
         cumulativeMark.setEditable(false);
         grade.setEditable(false);
 
-
+        // create one object student array to work with Lambda
+        final Student[] student = new Student[1];
         // Process events
-        btCalculateRecord.setOnAction(e -> calculateGrade());
-        btInsertRecord.setOnAction(e -> jdbc.insertStudent());
+        btCalculateRecord.setOnAction(e -> student[0] = calculateGrade());
+        btInsertRecord.setOnAction(e -> insertStudent(student[0]));
+
 
         // Create a scene and place it in the stage
         Scene scene = new Scene(gridPane, 400, 600);
         primaryStage.setTitle("GradeProcessing"); // Set title
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
+    }
+
+
+    public void insertStudent(Student student) { //throws SQLException, ClassNotFoundException{
+        // Initialise database
+        Jdbc jdbc = new Jdbc();
+
+        // used this try catch as SQLException not working correct with Lambda
+        Connection connection = null;
+        try {
+            connection = jdbc.setup();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        // Create a statement object, required this try/catch due to Lambda not liking the SQLException
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        int id = student.getId();
+        String name = student.getName();
+        double quiz = student.getQuizMark();
+        double a1 = student.getA1Mark();
+        double a2 = student.getA2Mark();
+        double exam = student.getExamMark();
+        double cumulativeMark = student.getCumulativeMark();
+        String grade = student.getGrade();
+
+        String sql = "";
+        sql = "INSERT INTO Java2 " + "VALUES (" + id + ",'" + name + "'," + quiz + "," + a1 + "," + a2 + "," + exam + "," + cumulativeMark + ",'" + grade + "')";
+        System.out.println(sql);
+
+        // Put data into the database, required this try catch due to Lambda not liking the SQLException
+        try {
+            statement.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Student " + id + " inserted into database");
 
     }
 
-    public void calculateGrade() {
+    public Student calculateGrade() {
 
         // Initialise student object
         Student student = new Student();
@@ -114,13 +162,14 @@ public class GradeProcessing extends Application {
         cumulativeMark.setText(String.valueOf(cumulativeMarkText));
         grade.setText(gradeText);
 
+        return student;
     }
 
 
     public class Student {
         // Get values from text fields
-        int id;
-        String name;
+        int idText;
+        String nameText;
         double quizMark;
         double a1Mark;
         double a2Mark;
@@ -133,19 +182,19 @@ public class GradeProcessing extends Application {
         }
 
         public int getId() {
-            return id;
+            return idText;
         }
 
         public void setId() {
-            this.id = Integer.parseInt(quiz.getText());
+            this.idText = Integer.parseInt(id.getText());
         }
 
         public String getName() {
-            return name;
+            return nameText;
         }
 
         public void setName() {
-            this.name = quiz.getText();
+            this.nameText = name.getText();
         }
 
         public double getQuizMark() {
