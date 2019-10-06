@@ -1,6 +1,5 @@
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -90,9 +89,6 @@ public class Histogram extends Application {
         insThread.start();
         bubThread.start();
 
-        Node n = barChartSelect.lookup("0");
-        n.setStyle("-fx-bar-fill: black");
-
         // create scene and place on stage
         Scene scene = new Scene(vBox, 800, 1000);
         primaryStage.setTitle("Multithreading for Sorting Methods");
@@ -101,19 +97,6 @@ public class Histogram extends Application {
 
     }
 
-    /**
-     * Change color of bar if value of i is <5 then red, if >5 then green if i>8 then blue
-     */
-    private void setNodeStyle(XYChart.Data<String, Number> data) {
-        Node node = data.getNode();
-        if (data.getYValue().intValue() > 8) {
-            node.setStyle("-fx-bar-fill: red");
-        } else if (data.getYValue().intValue() > 5) {
-            node.setStyle("-fx-bar-fill: blue");
-        } else {
-            node.setStyle("-fx-bar-fill: green");
-        }
-    }
 
     //create random integers for charts
     private void prepareData() {
