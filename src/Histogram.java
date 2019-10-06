@@ -21,6 +21,7 @@ public class Histogram extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        // gets 30 random numbers and duplicates them into 3 lists
         prepareData();
 
         // set axis to charts
@@ -50,6 +51,7 @@ public class Histogram extends Application {
         barChartInsert.setAnimated(false);
         barChartBubble.setAnimated(false);
 
+        //used if i wanted to put an axis on the chart
 //        xAxis.setLabel("X Axis");
 //        yAxis.setLabel("Y Axis");
 
@@ -87,7 +89,6 @@ public class Histogram extends Application {
 
         // create scene and place on stage
         Scene scene = new Scene(vBox, 800, 1000);
-
         primaryStage.setTitle("Multithreading for Sorting Methods");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -111,10 +112,12 @@ class SelectionSorting implements Runnable {
     private int[] data;
     private XYChart.Series sortChart;
 
+
     public SelectionSorting(int[] d, XYChart.Series s) {
         data = d;
         sortChart = s;
     }
+
 
     @Override
     public void run() {
@@ -122,21 +125,20 @@ class SelectionSorting implements Runnable {
             int i;
             int runTime = 0;
             for (i = 0; i <= data.length - 1; i++) {
-
+                // used to see what was running when
                 System.out.println("SELECTION RUNTIME: " + runTime);
                 runTime++;
 
+                // the selection sorting algorithm
                 int index = i;
                 for (int j = i + 1; j < data.length; j++)
                     if (data[j] < data[index])
                         index = j;
-
                 int smallerNumber = data[index];
                 data[index] = data[i];
                 data[i] = smallerNumber;
 
-
-                // potentially need to add the display chart functionality here
+                // displays the chart in a inner loop
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -147,6 +149,7 @@ class SelectionSorting implements Runnable {
                     }
                 });
 
+                // once complete, puts the thread on hold
                 Thread.sleep(800);
             }
         }//end outer for loop}//end selection sort
@@ -160,10 +163,12 @@ class InsertionSorting implements Runnable {
     private int[] data;
     private XYChart.Series sortChart;
 
+
     public InsertionSorting(int[] d, XYChart.Series s) {
         data = d;
         sortChart = s;
     }
+
 
     @Override
     public void run() {
@@ -173,10 +178,11 @@ class InsertionSorting implements Runnable {
             int runTime = 0;
             int temp;
             for (j = 1; j < data.length; j++) {
-
+                // used to see what was running when
                 System.out.println("                    INSERT RUNTIME: " + runTime);
                 runTime++;
 
+                // the insertion sorting algorithm
                 temp = data[j];
                 i = j; // range 0 to j-1 is sorted
                 while (i > 0 && data[i - 1] >= temp) {
@@ -186,7 +192,7 @@ class InsertionSorting implements Runnable {
                 data[i] = temp;
                 //} // end outer for loop
 
-                // potentially need to add the display chart functionality here
+                // displays the chart in a inner loop
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -197,6 +203,7 @@ class InsertionSorting implements Runnable {
                     }
                 });
 
+                // once complete, puts the thread on hold
                 Thread.sleep(800);
             }
         }//end outer for loop}//end selection sort
@@ -210,10 +217,12 @@ class BubbleSorting implements Runnable {
     private int[] data;
     private XYChart.Series sortChart;
 
+
     public BubbleSorting(int[] d, XYChart.Series s) {
         data = d;
         sortChart = s;
     }
+
 
     @Override
     public void run() {
@@ -223,10 +232,11 @@ class BubbleSorting implements Runnable {
             int runTime = 0;
             int temp;
             for (i = data.length - 1; i > 0; i--) {
-
+                // used to see what was running when
                 System.out.println("                                            BUBBLE RUNTIME: " + runTime);
                 runTime++;
 
+                // the bubble sorting algorithm
                 for (j = 0; j < i; j++) {
                     if (data[j] > data[j + 1]) {
                         temp = data[j];
@@ -235,7 +245,7 @@ class BubbleSorting implements Runnable {
                     }
                 }// end inner for loop
 
-                // potentially need to add the display chart functionality here
+                // displays the chart in a inner loop
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
@@ -246,6 +256,7 @@ class BubbleSorting implements Runnable {
                     }
                 });
 
+                // once complete, puts the thread on hold
                 Thread.sleep(800);
             }
         }//end outer for loop}//end selection sort
