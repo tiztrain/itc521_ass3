@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -23,6 +24,7 @@ public class Histogram extends Application {
 
         // gets 30 random numbers and duplicates them into 3 lists
         prepareData();
+
 
         // set axis to charts
         final CategoryAxis xAxisSel = new CategoryAxis();
@@ -51,6 +53,7 @@ public class Histogram extends Application {
         barChartInsert.setAnimated(false);
         barChartBubble.setAnimated(false);
 
+
         //used if i wanted to put an axis on the chart
 //        xAxis.setLabel("X Axis");
 //        yAxis.setLabel("Y Axis");
@@ -62,6 +65,7 @@ public class Histogram extends Application {
         insertionChart.setName("Insertion Sort");
         XYChart.Series bubbleChart = new XYChart.Series();
         bubbleChart.setName("Bubble Sort");
+
 
         // create bar chart and add in pane
         barChartSelect.getData().addAll(selectionChart);
@@ -86,6 +90,8 @@ public class Histogram extends Application {
         insThread.start();
         bubThread.start();
 
+        Node n = barChartSelect.lookup("0");
+        n.setStyle("-fx-bar-fill: black");
 
         // create scene and place on stage
         Scene scene = new Scene(vBox, 800, 1000);
@@ -95,6 +101,19 @@ public class Histogram extends Application {
 
     }
 
+    /**
+     * Change color of bar if value of i is <5 then red, if >5 then green if i>8 then blue
+     */
+    private void setNodeStyle(XYChart.Data<String, Number> data) {
+        Node node = data.getNode();
+        if (data.getYValue().intValue() > 8) {
+            node.setStyle("-fx-bar-fill: red");
+        } else if (data.getYValue().intValue() > 5) {
+            node.setStyle("-fx-bar-fill: blue");
+        } else {
+            node.setStyle("-fx-bar-fill: green");
+        }
+    }
 
     //create random integers for charts
     private void prepareData() {
