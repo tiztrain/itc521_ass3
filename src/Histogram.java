@@ -13,7 +13,9 @@ import java.util.Random;
 public class Histogram extends Application {
 
     int DATA_SIZE = 30;
-    public int[] data = new int[DATA_SIZE];
+    public int[] data1 = new int[DATA_SIZE];
+    public int[] data2 = new int[DATA_SIZE];
+    public int[] data3 = new int[DATA_SIZE];
 
 
     @Override
@@ -68,9 +70,9 @@ public class Histogram extends Application {
         vBox.getChildren().addAll(barChartSelect, barChartInsert, barChartBubble);
 
         // create tasks for different sorting methods
-        Runnable selSortAlgo = new SelectionSorting(data, selectionChart);
-        Runnable insSortAlgo = new InsertionSorting(data, insertionChart);
-        Runnable bubSortAlgo = new BubbleSorting(data, bubbleChart);
+        Runnable selSortAlgo = new SelectionSorting(data1, selectionChart);
+        Runnable insSortAlgo = new InsertionSorting(data2, insertionChart);
+        Runnable bubSortAlgo = new BubbleSorting(data3, bubbleChart);
 
         // create a thread for each sorting task
         Thread selThread = new Thread(selSortAlgo);
@@ -97,11 +99,12 @@ public class Histogram extends Application {
     private void prepareData() {
         Random random = new Random();
         for (int i = 0; i < DATA_SIZE; i++) {
-            data[i] = random.nextInt(DATA_SIZE);
+            data1[i] = random.nextInt(DATA_SIZE);
+            // create 3 of the same lists to adjust the values based on the sort type
+            data2[i] = data1[i];
+            data3[i] = data1[i];
         }
     }
-
-
 }
 
 class SelectionSorting implements Runnable {
@@ -132,6 +135,7 @@ class SelectionSorting implements Runnable {
                 data[index] = data[i];
                 data[i] = smallerNumber;
 
+
                 // potentially need to add the display chart functionality here
                 Platform.runLater(new Runnable() {
                     @Override
@@ -143,7 +147,7 @@ class SelectionSorting implements Runnable {
                     }
                 });
 
-                Thread.sleep(200);
+                Thread.sleep(800);
             }
         }//end outer for loop}//end selection sort
         catch (InterruptedException ex) {
@@ -168,9 +172,9 @@ class InsertionSorting implements Runnable {
             int j;
             int runTime = 0;
             int temp;
-            for (j = 1; j < data.length - 1; j++) {
+            for (j = 1; j < data.length; j++) {
 
-                System.out.println("        INSERT RUNTIME: " + runTime);
+                System.out.println("                    INSERT RUNTIME: " + runTime);
                 runTime++;
 
                 temp = data[j];
@@ -187,13 +191,13 @@ class InsertionSorting implements Runnable {
                     @Override
                     public void run() {
                         for (int i = 0; i < 30; i++) {
-                            System.out.println("        insertion data = " + data[i]);
+                            System.out.println("                    insertion data = " + data[i]);
                             sortChart.getData().add(new XYChart.Data(String.valueOf(i), data[i]));
                         }
                     }
                 });
 
-                Thread.sleep(200);
+                Thread.sleep(800);
             }
         }//end outer for loop}//end selection sort
         catch (InterruptedException ex) {
@@ -220,7 +224,7 @@ class BubbleSorting implements Runnable {
             int temp;
             for (i = data.length - 1; i > 0; i--) {
 
-                System.out.println("                BUBBLE RUNTIME: " + runTime);
+                System.out.println("                                            BUBBLE RUNTIME: " + runTime);
                 runTime++;
 
                 for (j = 0; j < i; j++) {
@@ -236,13 +240,13 @@ class BubbleSorting implements Runnable {
                     @Override
                     public void run() {
                         for (int i = 0; i < 30; i++) {
-                            System.out.println("                bubble data = " + data[i]);
+                            System.out.println("                                            bubble data = " + data[i]);
                             sortChart.getData().add(new XYChart.Data(String.valueOf(i), data[i]));
                         }
                     }
                 });
 
-                Thread.sleep(200);
+                Thread.sleep(800);
             }
         }//end outer for loop}//end selection sort
         catch (InterruptedException ex) {
