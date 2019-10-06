@@ -3,9 +3,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Jdbc extends GradeProcessing {
-    Student student = new Student();
     private Connection connection;
-
 
     public Connection setup() throws SQLException, ClassNotFoundException {
         // Load the JDBC driver
@@ -18,14 +16,5 @@ public class Jdbc extends GradeProcessing {
 
         return connection;
     }
-
-
-//        String sql="";
-//        sql = "INSERT INTO Java2 " + "VALUES (" + id + ",'" + name + "'," + quiz + "," + a1 + "," + a2 + "," + exam + "," + cumulativeMark + ",'" + grade + "')";
-//        statement.execute(sql);
-//        System.out.println("Inserted into database");
-//        sql ="INSERT INTO Java2 " + "VALUES (6111, 'Test', 90, 90, 90, 90, 90, 'HD')";
-//        statement.execute(sql);
-
 
 }
