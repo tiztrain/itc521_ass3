@@ -123,21 +123,27 @@ public class GradeProcessing extends Application {
         System.out.println("ID = " + id);
         if (length != 8) {
             result = false;
-            System.out.println("length");
+            confirmMsg.setText("Please make sure the ID entered \nis 8 digits in length and try again");
+            System.out.println("Please make sure the ID entered is 8 digits in length and try again");
         } else if (id <= 0) {
             result = false;
-            System.out.println("greater than 0");
+            confirmMsg.setText("Please make sure the ID is greater \nthan zero and try again");
+            System.out.println("Please make sure the ID is greater than zero and try again");
         } else if (quiz < 0 || quiz > 100) {
             result = false;
+            confirmMsg.setText("Please enter a number for quiz results \nthat is between 0 and 100");
             System.out.println("Please enter a number for quiz results that is between 0 and 100");
         } else if (a1 < 0 || a1 > 100) {
             result = false;
+            confirmMsg.setText("Please enter a number for assignment 1 \nresults that is between 0 and 100");
             System.out.println("Please enter a number for assignment 1 results that is between 0 and 100");
         } else if (a2 < 0 || a2 > 100) {
             result = false;
+            confirmMsg.setText("Please enter a number for assignment 2 \nresults that is between 0 and 100");
             System.out.println("Please enter a number for assignment 2 results that is between 0 and 100");
         } else if (exam < 0 || exam > 100) {
             result = false;
+            confirmMsg.setText("Please enter a number for exam results \nthat is between 0 and 100");
             System.out.println("Please enter a number for exam results that is between 0 and 100");
         } else {
             result = true;
@@ -184,8 +190,11 @@ public class GradeProcessing extends Application {
             if (confirmCorrectValues(student)) {
                 stmt.execute(sql);
                 System.out.println("Student " + id + " inserted into database");
-                confirmMsg.setText("Student inserted into database");
+                confirmMsg.setText("Student " + id + " inserted into database");
             }
+//            else{
+//                confirmMsg.setText("Error. Student was not entered into the database. Please try again.");
+//            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -199,7 +208,7 @@ public class GradeProcessing extends Application {
 
         try {
             //ResultSet resultSet = statement.executeQuery ("select * from Java2");
-            ResultSet resultSet = stmt.executeQuery("select * from Java2 where ID = '" + id + "'");
+            ResultSet resultSet = stmt.executeQuery("SELECT * from Java2 WHERE ID = '" + id + "'");
             String result = "";
             ResultSetMetaData rsmd;
             int columnsNumber = 0;
@@ -239,10 +248,14 @@ public class GradeProcessing extends Application {
                     //result = "";
                 }
                 System.out.println();
-                //result = "";
             }
-            System.out.println("Found Student " + name);
-            confirmMsg.setText("Found student");
+            // displays the message in the GUI if the student is found or not
+            if (result.equals("")) {
+                confirmMsg.setText("Student not found. \nPlease enter another ID and try again.");
+            } else {
+                confirmMsg.setText("Found student " + id);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
