@@ -24,10 +24,10 @@ public class GradeProcessing extends Application {
     private Label confirmMsg = new Label();
 
     // Create buttons for actions
-    private Button btCalculateRecord = new Button("Calculate Record");
-    private Button btSearchRecord = new Button("Search for Record");
-    private Button btInsertRecord = new Button("Insert Record");
-    private Button btUpdateRecord = new Button("Update Record");
+    private Button btCalculateGrade = new Button("Calculate Grade");
+    private Button btSearchStudent = new Button("Search for Student");
+    private Button btInsertStudent = new Button("Insert Student");
+    private Button btUpdateStudent = new Button("Update Student");
 
     private Statement stmt;
 
@@ -61,10 +61,10 @@ public class GradeProcessing extends Application {
         gridPane.add(cumulativeMark, 1, 6);
         gridPane.add(new Label("Grade:"), 0, 7);
         gridPane.add(grade, 1, 7);
-        gridPane.add(btCalculateRecord, 1, 9);
-        gridPane.add(btSearchRecord, 1, 10);
-        gridPane.add(btInsertRecord, 1, 11);
-        gridPane.add(btUpdateRecord, 1, 12);
+        gridPane.add(btCalculateGrade, 1, 9);
+        gridPane.add(btSearchStudent, 1, 10);
+        gridPane.add(btInsertStudent, 1, 11);
+        gridPane.add(btUpdateStudent, 1, 12);
         confirmMsg.setText("Confirmation messages will show here");
         gridPane.add(confirmMsg, 1, 13);
 
@@ -85,10 +85,10 @@ public class GradeProcessing extends Application {
         Student student = new Student();
 
         // Process events
-        btCalculateRecord.setOnAction(e -> oneStudent[0] = calculateGrade());
-        btInsertRecord.setOnAction(e -> insertStudent(student));
-        btSearchRecord.setOnAction(e -> searchStudent(student));
-        btUpdateRecord.setOnAction(e -> updateStudent(student));
+        btCalculateGrade.setOnAction(e -> oneStudent[0] = calculateGrade());
+        btInsertStudent.setOnAction(e -> insertStudent(student));
+        btSearchStudent.setOnAction(e -> searchStudent(student));
+        btUpdateStudent.setOnAction(e -> updateStudent(student));
 
 
         // Create a scene and place it in the stage
@@ -417,7 +417,8 @@ public class GradeProcessing extends Application {
         }
 
         public void setCumulativeMark() {
-            this.cumulativeMark = (quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6);
+            // converts the result to 2 decimal places
+            this.cumulativeMark = Math.round(((quizMark * 0.05) + (a1Mark * 0.15) + (a2Mark * 0.2) + (examMark * 0.6)) * 100.0) / 100.0;
         }
 
         public String getGrade() {
