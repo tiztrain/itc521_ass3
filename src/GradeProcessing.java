@@ -83,6 +83,7 @@ public class GradeProcessing extends Application {
         btCalculateRecord.setOnAction(e -> oneStudent[0] = calculateGrade());
         btInsertRecord.setOnAction(e -> insertStudent(student));
         btSearchRecord.setOnAction(e -> searchStudent(student));
+        btUpdateRecord.setOnAction(e -> updateStudent(student));
 
 
         // Create a scene and place it in the stage
@@ -95,6 +96,15 @@ public class GradeProcessing extends Application {
 
     public void insertStudent(Student student) {
 
+        student.setId();
+        student.setName();
+        student.setQuizMark();
+        student.setA1Mark();
+        student.setA2Mark();
+        student.setExamMark();
+        student.setCumulativeMark();
+        student.setGrade();
+
         int id = student.getId();
         String name = student.getName();
         double quiz = student.getQuizMark();
@@ -105,8 +115,8 @@ public class GradeProcessing extends Application {
         String grade = student.getGrade();
 
         String sql = "";
-        sql = "INSERT INTO Java2 " + "VALUES (" + id + ",'" + name + "'," + quiz + "," + a1 + "," + a2 + "," + exam +
-                "," + cumulativeMark + ",'" + grade + "')";
+        sql = String.format("INSERT INTO Java2 VALUES (%s, '%s', %s, %s, %s, %s, %s, '%s')",
+                id, name, quiz, a1, a2, exam, cumulativeMark, grade);
         System.out.println(sql);
 
         // Put data into the database, required this try catch due to Lambda not liking the SQLException
@@ -122,16 +132,8 @@ public class GradeProcessing extends Application {
     public void searchStudent(Student student) {
 
         //TODO ability to search by student ID as well
-//        int id = student.getId();
         student.setName();
         String name = student.getName();
-//        double quiz = student.getQuizMark();
-//        double a1 = student.getA1Mark();
-//        double a2 = student.getA2Mark();
-//        double exam = student.getExamMark();
-//        double cumulativeMark = student.getCumulativeMark();
-//        String grade = student.getGrade();
-
 
         try {
             //ResultSet resultSet = statement.executeQuery ("select * from Java2");
@@ -176,14 +178,49 @@ public class GradeProcessing extends Application {
                     //result = "";
                 }
                 System.out.println();
-                result = "";
+                //result = "";
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        System.out.println("Found Student " + name);
     }
 
+    public void updateStudent(Student student) {
+
+        student.setId();
+        student.setName();
+        student.setQuizMark();
+        student.setA1Mark();
+        student.setA2Mark();
+        student.setExamMark();
+        student.setCumulativeMark();
+        student.setGrade();
+
+        int id = student.getId();
+        String name = student.getName();
+        double quiz = student.getQuizMark();
+        double a1 = student.getA1Mark();
+        double a2 = student.getA2Mark();
+        double exam = student.getExamMark();
+        double cumulativeMark = student.getCumulativeMark();
+        String grade = student.getGrade();
+
+        String sql = "";
+        sql = String.format("UPDATE Java2 SET ID = %s, Name = '%s', Quiz = %s, A1 = %s, A2 = %s, Exam = %s, " +
+                        "CumulativeMark = %s, Grade = '%s' WHERE ID = '%s'",
+                id, name, quiz, a1, a2, exam, cumulativeMark, grade, id);
+        System.out.println(sql);
+
+        // Put data into the database, required this try catch due to Lambda not liking the SQLException
+        try {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Student " + id + " " + name + " updated");
+
+    }
 
     public Student calculateGrade() {
 
