@@ -7,9 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class GradeProcessing extends Application {
 
@@ -29,20 +27,18 @@ public class GradeProcessing extends Application {
     private Button btInsertRecord = new Button("Insert Record");
     private Button btUpdateRecord = new Button("Update Record");
 
-    //public Jdbc jdbc;
+    private Statement stmt;
 
     // Main class to run functions
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        //run jdbc and establish connection
-//        Jdbc jdbc = new Jdbc();
-//        jdbc.setup();
-        //setup stage and GUI
         launch(args);
     }
 
     // GUI setup
     @Override
     public void start(Stage primaryStage) throws SQLException, ClassNotFoundException {
+        initializeDB();
+
         // Create UI
         GridPane gridPane = new GridPane();
         gridPane.setHgap(5);
@@ -80,10 +76,13 @@ public class GradeProcessing extends Application {
         grade.setEditable(false);
 
         // create one object student array to work with Lambda
-        final Student[] student = new Student[1];
+        final Student[] oneStudent = new Student[1];
+        Student student = new Student();
+
         // Process events
-        btCalculateRecord.setOnAction(e -> student[0] = calculateGrade());
-        btInsertRecord.setOnAction(e -> insertStudent(student[0]));
+        btCalculateRecord.setOnAction(e -> oneStudent[0] = calculateGrade());
+        btInsertRecord.setOnAction(e -> insertStudent(student));
+        btSearchRecord.setOnAction(e -> searchStudent(student));
 
 
         // Create a scene and place it in the stage
@@ -94,27 +93,7 @@ public class GradeProcessing extends Application {
     }
 
 
-    public void insertStudent(Student student) { //throws SQLException, ClassNotFoundException{
-        // Initialise database
-        Jdbc jdbc = new Jdbc();
-
-        // used this try catch as SQLException not working correct with Lambda
-        Connection connection = null;
-        try {
-            connection = jdbc.setup();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        // Create a statement object, required this try/catch due to Lambda not liking the SQLException
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void insertStudent(Student student) {
 
         int id = student.getId();
         String name = student.getName();
@@ -126,18 +105,85 @@ public class GradeProcessing extends Application {
         String grade = student.getGrade();
 
         String sql = "";
-        sql = "INSERT INTO Java2 " + "VALUES (" + id + ",'" + name + "'," + quiz + "," + a1 + "," + a2 + "," + exam + "," + cumulativeMark + ",'" + grade + "')";
+        sql = "INSERT INTO Java2 " + "VALUES (" + id + ",'" + name + "'," + quiz + "," + a1 + "," + a2 + "," + exam +
+                "," + cumulativeMark + ",'" + grade + "')";
         System.out.println(sql);
 
         // Put data into the database, required this try catch due to Lambda not liking the SQLException
         try {
-            statement.execute(sql);
+            stmt.execute(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("Student " + id + " inserted into database");
 
     }
+
+    public void searchStudent(Student student) {
+
+        //TODO ability to search by student ID as well
+//        int id = student.getId();
+        student.setName();
+        String name = student.getName();
+//        double quiz = student.getQuizMark();
+//        double a1 = student.getA1Mark();
+//        double a2 = student.getA2Mark();
+//        double exam = student.getExamMark();
+//        double cumulativeMark = student.getCumulativeMark();
+//        String grade = student.getGrade();
+
+
+        try {
+            //ResultSet resultSet = statement.executeQuery ("select * from Java2");
+            ResultSet resultSet = stmt.executeQuery("select * from Java2 where Name = '" + name + "'");
+            String result = "";
+            ResultSetMetaData rsmd;
+            int columnsNumber = 0;
+            // Iterate through the result and print the student names
+            while (resultSet.next()) {
+                rsmd = resultSet.getMetaData();
+                columnsNumber = rsmd.getColumnCount();
+                for (int i = 1; i <= columnsNumber; i++) {
+                    result = resultSet.getString(i);
+                    if (i == 1) {
+                        id.setText(result);
+                        student.getId();
+                    }
+//                    if(i == 2){
+//                        name.setText(result);
+//                        student.getName();
+//                    }
+                    else if (i == 3) {
+                        quiz.setText(result);
+                        student.getQuizMark();
+                    } else if (i == 4) {
+                        a1.setText(result);
+                        student.getA1Mark();
+                    } else if (i == 5) {
+                        a2.setText(result);
+                        student.getA2Mark();
+                    } else if (i == 6) {
+                        exam.setText(result);
+                        student.getExamMark();
+                    } else if (i == 7) {
+                        cumulativeMark.setText(result);
+                        student.getCumulativeMark();
+                    } else if (i == 8) {
+                        grade.setText(result);
+                        student.getGrade();
+                    }
+                    System.out.print(result + "\t");
+                    //result = "";
+                }
+                System.out.println();
+                result = "";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
     public Student calculateGrade() {
 
@@ -163,6 +209,24 @@ public class GradeProcessing extends Application {
         grade.setText(gradeText);
 
         return student;
+    }
+
+    private void initializeDB() {
+        try {
+            // Load the JDBC driver
+            Class.forName("com.mysql.jdbc.Driver");
+            System.out.println("Loaded the MySQL JDBC Driver");
+
+            // Connect to a database
+            Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1/gradeprocessing",
+                    "root", "admin");
+            System.out.println("Successfully connected to Database");
+
+            // Create statement
+            stmt = connection.createStatement();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
