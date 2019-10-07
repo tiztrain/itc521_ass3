@@ -20,6 +20,8 @@ public class GradeProcessing extends Application {
     private TextField exam = new TextField();
     private TextField cumulativeMark = new TextField();
     private TextField grade = new TextField();
+    //private TextField confirmMsg = new TextField();
+    private Label confirmMsg = new Label();
 
     // Create buttons for actions
     private Button btCalculateRecord = new Button("Calculate Record");
@@ -63,6 +65,9 @@ public class GradeProcessing extends Application {
         gridPane.add(btSearchRecord, 1, 10);
         gridPane.add(btInsertRecord, 1, 11);
         gridPane.add(btUpdateRecord, 1, 12);
+        confirmMsg.setText("Confirmation messages will show here");
+        gridPane.add(confirmMsg, 1, 13);
+
 
         // Set properties for UI
         gridPane.setAlignment(Pos.CENTER);
@@ -87,10 +92,63 @@ public class GradeProcessing extends Application {
 
 
         // Create a scene and place it in the stage
-        Scene scene = new Scene(gridPane, 400, 600);
+        Scene scene = new Scene(gridPane, 500, 600);
         primaryStage.setTitle("GradeProcessing"); // Set title
         primaryStage.setScene(scene); // Place the scene in the stage
         primaryStage.show(); // Display the stage
+    }
+
+
+    public boolean confirmCorrectValues(Student student) {
+        boolean result;
+
+        student.setId();
+        student.setName();
+        student.setQuizMark();
+        student.setA1Mark();
+        student.setA2Mark();
+        student.setExamMark();
+        student.setCumulativeMark();
+        student.setGrade();
+
+        int id = student.getId();
+        double quiz = student.getQuizMark();
+        double a1 = student.getA1Mark();
+        double a2 = student.getA2Mark();
+        double exam = student.getExamMark();
+
+
+        int length = (int) (Math.log10(id) + 1);
+        System.out.println("The number of digits are: " + length);
+        System.out.println("ID = " + id);
+        if (length != 8) {
+            result = false;
+            System.out.println("length");
+        } else if (id <= 0) {
+            result = false;
+            System.out.println("greater than 0");
+        } else if (quiz < 0 || quiz > 100) {
+            result = false;
+            System.out.println("Please enter a number for quiz results that is between 0 and 100");
+        } else if (a1 < 0 || a1 > 100) {
+            result = false;
+            System.out.println("Please enter a number for assignment 1 results that is between 0 and 100");
+        } else if (a2 < 0 || a2 > 100) {
+            result = false;
+            System.out.println("Please enter a number for assignment 2 results that is between 0 and 100");
+        } else if (exam < 0 || exam > 100) {
+            result = false;
+            System.out.println("Please enter a number for exam results that is between 0 and 100");
+        } else {
+            result = true;
+        }
+        System.out.println("Result = " + result);
+        return result;
+    }
+
+
+    public void test() {
+        System.out.println("PRINT");
     }
 
 
@@ -114,6 +172,7 @@ public class GradeProcessing extends Application {
         double cumulativeMark = student.getCumulativeMark();
         String grade = student.getGrade();
 
+
         String sql = "";
         sql = String.format("INSERT INTO Java2 VALUES (%s, '%s', %s, %s, %s, %s, %s, '%s')",
                 id, name, quiz, a1, a2, exam, cumulativeMark, grade);
@@ -121,23 +180,26 @@ public class GradeProcessing extends Application {
 
         // Put data into the database, required this try catch due to Lambda not liking the SQLException
         try {
-            stmt.execute(sql);
+            // checks if values in correct formatting
+            if (confirmCorrectValues(student)) {
+                stmt.execute(sql);
+                System.out.println("Student " + id + " inserted into database");
+                confirmMsg.setText("Student inserted into database");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Student " + id + " inserted into database");
 
     }
 
     public void searchStudent(Student student) {
 
-        //TODO ability to search by student ID as well
-        student.setName();
-        String name = student.getName();
+        student.setId();
+        String id = String.valueOf(student.getId());
 
         try {
             //ResultSet resultSet = statement.executeQuery ("select * from Java2");
-            ResultSet resultSet = stmt.executeQuery("select * from Java2 where Name = '" + name + "'");
+            ResultSet resultSet = stmt.executeQuery("select * from Java2 where ID = '" + id + "'");
             String result = "";
             ResultSetMetaData rsmd;
             int columnsNumber = 0;
@@ -147,15 +209,14 @@ public class GradeProcessing extends Application {
                 columnsNumber = rsmd.getColumnCount();
                 for (int i = 1; i <= columnsNumber; i++) {
                     result = resultSet.getString(i);
-                    if (i == 1) {
-                        id.setText(result);
-                        student.getId();
-                    }
-//                    if(i == 2){
-//                        name.setText(result);
-//                        student.getName();
+//                    if (i == 1) {
+//                        id.setText(result);
+//                        student.getId();
 //                    }
-                    else if (i == 3) {
+                    if (i == 2) {
+                        name.setText(result);
+                        student.getName();
+                    } else if (i == 3) {
                         quiz.setText(result);
                         student.getQuizMark();
                     } else if (i == 4) {
@@ -180,10 +241,11 @@ public class GradeProcessing extends Application {
                 System.out.println();
                 //result = "";
             }
+            System.out.println("Found Student " + name);
+            confirmMsg.setText("Found student");
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Found Student " + name);
     }
 
     public void updateStudent(Student student) {
@@ -214,11 +276,16 @@ public class GradeProcessing extends Application {
 
         // Put data into the database, required this try catch due to Lambda not liking the SQLException
         try {
-            stmt.execute(sql);
+            // checks if values in correct formatting
+            if (confirmCorrectValues(student)) {
+                stmt.execute(sql);
+                System.out.println("Student " + id + " updated");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("Student " + id + " " + name + " updated");
+        confirmMsg.setText("Updated student details");
 
     }
 
@@ -244,6 +311,8 @@ public class GradeProcessing extends Application {
         // Display results in non editable fields
         cumulativeMark.setText(String.valueOf(cumulativeMarkText));
         grade.setText(gradeText);
+
+        confirmMsg.setText("Grade Calculated");
 
         return student;
     }
